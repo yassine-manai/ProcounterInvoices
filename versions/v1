@@ -1,0 +1,190 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+import pandas as pd
+from config.log_config import logger
+import threading
+import datetime
+import os
+import sys
+
+class CSVReaderApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("CSV Checker")
+        self.root.geometry("900x700")
+        self.root.configure(bg="#f0f0f0")
+
+        # Set application icon
+        self.set_app_icon()
+
+        self.style = ttk.Style()
+        self.style.theme_use("clam")
+        self.configure_styles()
+
+        self.frame = ttk.Frame(root, padding="30", style="MainFrame.TFrame")
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+        self.create_widgets()
+
+    def set_app_icon(self):
+        icon_path = self.resource_path("assets/icon_search.png")
+        if os.path.exists(icon_path):
+            self.root.iconbitmap(icon_path)
+
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
+
+    def configure_styles(self):
+        self.style.configure("MainFrame.TFrame", background="#ffffff", relief="ridge", borderwidth=2)
+        self.style.configure("TLabel", background="#ffffff", font=("Helvetica", 12))
+        self.style.configure("Title.TLabel", font=("Helvetica", 24, "bold"), foreground="#2c3e50")
+        self.style.configure("TEntry", font=("Helvetica", 12))
+        self.style.configure("TButton", font=("Helvetica", 12, "bold"), foreground="#ffffff", background="#3498db", padding=10)
+        self.style.map("TButton",
+                       foreground=[('pressed', '#ffffff'), ('active', '#ffffff')],
+                       background=[('pressed', '!disabled', '#2980b9'), ('active', '#2980b9')])
+        self.style.configure("Result.TFrame", background="#e8f4f8", relief="sunken", borderwidth=2)
+
+    def create_widgets(self):
+        # Title
+        self.title_label = ttk.Label(self.frame, text="CSV Data Search", style="Title.TLabel")
+        self.title_label.pack(pady=(0, 30))
+
+        # File path entry
+        file_frame = ttk.Frame(self.frame)
+        file_frame.pack(fill=tk.X, pady=10)
+
+        self.file_path_label = ttk.Label(file_frame, text="CSV File Path:")
+        self.file_path_label.pack(side=tk.LEFT, padx=(0, 10))
+
+        self.file_path_entry = ttk.Entry(file_frame, width=60)
+        self.file_path_entry.pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+        self.browse_icon = tk.PhotoImage(file=self.resource_path("assets/icon_search.png")).subsample(20, 20)
+        self.browse_button = ttk.Button(file_frame, image=self.browse_icon, command=self.browse_file)
+        self.browse_button.pack(side=tk.LEFT, padx=(10, 0))
+
+        # Data search input
+        search_frame = ttk.Frame(self.frame)
+        search_frame.pack(fill=tk.X, pady=10)
+
+        self.search_label = ttk.Label(search_frame, text="Data to Search:")
+        self.search_label.pack(side=tk.LEFT, padx=(0, 10))
+
+        self.search_entry = ttk.Entry(search_frame, width=60)
+        self.search_entry.pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+        # Process button
+        self.process_button = ttk.Button(self.frame, text="Search", command=self.start_search)
+        self.process_button.pack(pady=20)
+
+
+        # Result frame
+        self.result_frame = ttk.Frame(self.frame, style="Result.TFrame")
+        self.result_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+
+        # Result text area
+        self.result_text = tk.Text(self.result_frame, height=15, width=80, wrap=tk.WORD, font=("Helvetica", 12), bg="#f9f9f9", relief="flat")
+        self.result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.result_text.config(state=tk.DISABLED)
+
+        # Scrollbar for result text
+        self.scrollbar = ttk.Scrollbar(self.result_frame, orient="vertical", command=self.result_text.yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.result_text.configure(yscrollcommand=self.scrollbar.set)
+
+    def browse_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+        if file_path:
+            self.file_path_entry.delete(0, tk.END)
+            self.file_path_entry.insert(0, file_path)
+
+    def start_search(self):
+        self.process_button.config(state=tk.DISABLED)
+        threading.Thread(target=self.search_csv, daemon=True).start()
+
+    def search_csv(self):
+        file_path = self.file_path_entry.get()
+        search_data = self.search_entry.get()
+
+        if not file_path or not search_data:
+            self.display_result("Please select a CSV file and enter data to search.", error=True)
+            self.stop_progress()
+            return
+
+        try:
+            start_time = datetime.datetime.now()
+            df = pd.read_csv(file_path)
+            found = False
+            found_locations = []
+
+            for column in df.columns:
+                matches = df[df[column].astype(str).str.contains(search_data, case=False, regex=False)]
+                
+                if not matches.empty:
+                    found = True
+                    for index, row in matches.iterrows():
+                        found_locations.append(f"Column: {column}, Row: {index + 2}")
+
+            end_time = datetime.datetime.now()
+            duration = (end_time - start_time).total_seconds()
+
+            if found:
+                result = f"Success: Data '{search_data}' found in the CSV file.\n\nLocations:\n" + "\n".join(found_locations[:10])
+                if len(found_locations) > 10:
+                    result += f"\n\n... and {len(found_locations) - 10} more occurrences."
+                logger.info(f"Data '{search_data}' found in {file_path}")
+                self.display_result(result, found=True)
+            else:
+                result = f"Data '{search_data}' not found in the CSV file."
+                logger.warning(f"Data '{search_data}' not found in {file_path}")
+                self.display_result(result, error=True)
+
+            timestamp = end_time.strftime("%Y-%m-%d %H:%M:%S")
+            file_size = os.path.getsize(file_path) / (1024 * 1024)  # Size in MB
+            self.display_additional_info(f"Search completed at: {timestamp}\nDuration: {duration:.2f} seconds\nFile Size: {file_size:.2f} MB")
+
+        except Exception as e:
+            self.display_result(f"Failed to read CSV file: {str(e)}", error=True)
+            logger.error(f"Failed to read CSV file {file_path}: {str(e)}")
+
+        self.stop_progress()
+
+    def stop_progress(self):
+        self.process_button.config(state=tk.NORMAL)
+
+    def display_result(self, message, found=False, error=False):
+        self.result_text.config(state=tk.NORMAL)
+        self.result_text.delete(1.0, tk.END)
+        
+        if found:
+            self.result_text.config(background="#e6ffe6")  # Light green for success
+        elif error:
+            self.result_text.config(background="#ffe6e6")  # Light red for error
+        else:
+            self.result_text.config(background="#f9f9f9")  # Default background
+
+        self.result_text.insert(tk.END, message)
+        self.result_text.config(state=tk.DISABLED)
+        
+        # Animation effect
+        self.result_frame.pack_forget()
+        self.result_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+        self.root.update()
+
+    def display_additional_info(self, info):
+        self.result_text.config(state=tk.NORMAL)
+        self.result_text.insert(tk.END, f"\n\n{info}")
+        self.result_text.config(state=tk.DISABLED)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CSVReaderApp(root)
+    root.mainloop()

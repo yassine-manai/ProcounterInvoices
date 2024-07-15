@@ -1,0 +1,115 @@
+import pandas as pd
+import os
+from config.log_config import logger
+
+
+
+def search_csv(file_path, search_type, search_term):
+    encodings = ['utf-8', 'iso-8859-1', 'latin1', 'cp1252']
+    
+    for encoding in encodings:
+        try:
+            logger.info(f"Attempting to read file with encoding: {encoding}")
+            df = pd.read_csv(file_path, encoding=encoding, sep=None, engine='python')
+            
+            if search_type == 1:  # Row search
+                logger.info(f"Performing row search for term: {search_term}")
+                result = df[df.astype(str).apply(lambda row: row.str.contains(search_term, case=False).any(), axis=1)]
+            elif search_type == 2:  # Column search
+                logger.info(f"Performing column search for term: {search_term}")
+                matching_columns = df.columns[df.columns.astype(str).str.contains(search_term, case=False)]
+                result = df[matching_columns]
+            elif search_type == 3:  # Value search
+                logger.info(f"Performing value search for term: {search_term}")
+                result = df[df.astype(str).apply(lambda col: col.str.contains(search_term, case=False)).any(axis=1)]
+            else:
+                logger.error("Invalid search type")
+                return None
+            
+            if result.empty:
+                logger.info(f"No results found for '{search_term}'")
+                return None
+            else:
+                logger.info(f"Results found for '{search_term}'")
+                return result
+        
+        except UnicodeDecodeError:
+            logger.warning(f"UnicodeDecodeError with encoding {encoding}")
+            continue
+        except FileNotFoundError:
+            logger.error(f"File not found: {file_path}")
+            return None
+        except pd.errors.EmptyDataError:
+            logger.error(f"Empty file: {file_path}")
+            return None
+        except Exception as e:
+            logger.exception(f"An error occurred: {str(e)}")
+            return None
+    
+    logger.error("Unable to read the file with any of the attempted encodings")
+    return None
+
+
+def write_results_to_csv(result_df, search_term, search_type):
+    if result_df is not None and not result_df.empty:
+        output_filename = f"search_results_type{search_type}_{search_term.replace(' ', '_')}.csv"
+        counter = 1
+        while os.path.exists(output_filename):
+            output_filename = f"search_results_type{search_type}_{search_term.replace(' ', '_')}_{counter}.csv"
+            counter += 1
+        
+        result_df.to_csv(output_filename, index=False)
+        logger.info(f"Results written to {output_filename}")
+        print(f"Results have been written to {output_filename}")
+    else:
+        logger.info("No results to write to CSV")
+        print("No results to write to CSV.")
+
+def get_file_info(file_path):
+    try:
+        file_size = os.path.getsize(file_path)
+        modification_time = os.path.getmtime(file_path)
+        logger.info(f"File info retrieved for {file_path}")
+        return f"File size: {file_size} bytes, Last modified: {pd.to_datetime(modification_time, unit='s')}"
+    except Exception as e:
+        logger.exception(f"Error getting file info: {str(e)}")
+        return "Unable to retrieve file information"
+
+def main():
+    while True:
+        file_path = input("Enter the path to the CSV file: ")
+        logger.info(f"User entered file path: {file_path}")
+        
+        if os.path.exists(file_path):
+            break
+        else:
+            logger.warning(f"Invalid file path: {file_path}")
+            print("File not found. Please enter a valid file path.")
+    
+    print(get_file_info(file_path))
+    
+    while True:
+        try:
+            search_type = int(input("Enter search type \n 1: Row \n 2: Column \n 3: Value \n "))
+            logger.info(f"User selected search type: {search_type}")
+            if search_type in [1, 2, 3]:
+                break
+            else:
+                logger.warning(f"Invalid search type: {search_type}")
+                print("Please enter 1, 2, or 3.")
+        except ValueError:
+            logger.warning("Invalid input for search type")
+            print("Please enter a number.")
+    
+    search_term = input("Enter the search term: ")
+    logger.info(f"User entered search term: {search_term}")
+    
+    result = search_csv(file_path, search_type, search_term)
+    if result is not None:
+        print(result.to_string(index=False))
+    write_results_to_csv(result, search_term, search_type)
+
+if __name__ == "__main__":
+    logger.info("Script started")
+    main()
+    logger.info("Script completed")
