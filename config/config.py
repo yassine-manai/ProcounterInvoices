@@ -28,3 +28,4 @@ ZR_ID =  int(os.getenv("ZR_ID"))
 ZR_PORT =  int(os.getenv("ZR_PORT")) 
 
 PROCOUNTOR_URL= str(os.getenv("PROCOUNTOR_URL")) 
+BEARER_TOKEN = str(os.getenv("BEARER_TOKEN"))

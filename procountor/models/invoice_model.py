@@ -1,9 +1,10 @@
+import datetime as dt
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from procountor.enum.country_Enum import Country
 from procountor.enum.currency_Enum import CurrencyCode
-from procountor.enum.payment_Enum import PaymentMeth
-from procountor.enum.short_Enum import DeliveryMethod, DocumentInvoiceType, Language, PaymentType, ReferenceType, cashDiscountsType
+from procountor.enum.payment_Enum import PaymentMeth, PaymentMethType
+from procountor.enum.short_Enum import DeliveryMethod, DocumentInvoiceType, InvoiceSendingMethod, Language, PaymentType, ReferenceType, cashDiscountsType
 from procountor.enum.status_Enum import Status
 from procountor.enum.unitProduct_Enum import UnitProduct
 
@@ -175,3 +176,47 @@ class Invoice(BaseModel):
     version: Optional[str]
     isOffer: Optional[bool]
     
+    
+class CommentDTO(BaseModel):
+    id: Optional[int]
+    author: Optional[str]
+    dateTime: Optional[dt.datetime]
+    comment: str
+    
+class MarkInvoiceAsPaid(BaseModel):
+    paymentDate: str = Field(..., description="Payment date. Cannot be in closed financial period")
+    amount: float = Field(..., description="Amount in the given currency")
+    currency: CurrencyCode = Field(..., description="Currency in ISO 4217 format. It should always be the same as in the invoice")
+    description: Optional[str] = Field(None, max_length=140, description="Payment description. Used only in sales invoices.")
+    paymentMethodType: Optional[PaymentMethType] = Field(None, description="Payment method type. Used only in sales invoices.")
+    
+    
+class CommentEvent(BaseModel):
+    comment: Optional[str] = Field(None, max_length=100, description="Comment for verification or approval event.")
+
+
+class resultsInvoice(BaseModel):
+    id : int
+    partnerId: int
+    typeInvoice: DocumentInvoiceType
+    status: Status
+    invoiceNumber: int 
+    originalInvoiceNumber: str
+    invoiceChannel: InvoiceSendingMethod
+    date: str[dt.date]
+    dueDate: str[dt.date]
+    created:str[dt.datetime]
+    version: str[dt.datetime]
+    
+
+class metaInvoice(BaseModel):
+    pageNumber: int
+    pageSize: int
+    resultCount: int
+    totalCount: int
+     
+class invoiceSearchResult(BaseModel):
+    results: resultsInvoice
+    meta: metaInvoice
+    
+
