@@ -4594,3 +4594,17 @@ Index: [] | main.py:34
 [8 rows x 17 columns] 
  | main.py:35
 2024-07-15 14:33:17.763 | INFO     | <module>:Merged data written to /mnt/c/Users/yassi/Desktop/AsteroIdea/Projects Specs/Finland - Procounter Invoicing API Connector/DEP/merged_data.csv | main.py:44
+2024-07-18 13:44:41.762 | DEBUG    | <module>:Process start . . .  | main.py:54
+2024-07-18 13:44:41.765 | ERROR    | wrapper:Unexpected error: BaseModel.dict() missing 1 required positional argument: 'self' | check_error.py:24
+2024-07-18 13:48:40.439 | DEBUG    | <module>:Process start . . .  | main.py:54
+2024-07-18 13:48:40.448 | DEBUG    | make_request:Making POST request to value=https://pts-procountor.pubdev.azure.procountor.com/api/invoices with headers: {'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyODI2NCIsImF1ZCI6IlBhcmt0ZWNoVGVzdENsaWVudCIsImlzcyI6Imh0dHBzOi8vcHRzLXByb2NvdW50b3IucHViZGV2LmF6dXJlLnByb2NvdW50b3IuY29tIiwiaWF0IjoxNzIxMTQwNzY3LCJqdGkiOiJmYjM3ODYyMS04NTE1LTRlZTMtOGMxOC0zMDdjOTNmZTFjNWQiLCJjaWQiOjE1NTIxfQ.SADOmQJSpLBDPNZiUnwJ0e4JmAeYGbzovdak_gUcqFI', 'Content-Type': 'application/json'} | request_api.py:20
+2024-07-18 13:48:40.455 | ERROR    | make_request: | request_api.py:53
+2024-07-18 13:48:40.455 | ERROR    | wrapper:Unexpected error: An unexpected error occurred: Object of type DocumentInvoiceType is not JSON serializable | check_error.py:24
+2024-07-18 13:52:44.460 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 13:55:37.289 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:02:38.918 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:04:02.741 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:06:00.275 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:07:07.636 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:11:18.404 | DEBUG    | <module>:Process start . . .  | main.py:55
+2024-07-18 14:18:07.172 | DEBUG    | <module>:Process start . . .  | main.py:55

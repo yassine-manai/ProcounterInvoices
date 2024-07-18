@@ -24,7 +24,7 @@ APP_PORT =  int(os.getenv("APP_PORT"))
 SERVER_IP =  str(os.getenv("SERVER_IP")) 
 SERVER_PORT =  int(os.getenv("SERVER_PORT"))
 
-ZR_ID =  int(os.getenv("ZR_ID"))
+ZR_IP =  str(os.getenv("ZR_IP"))
 ZR_PORT =  int(os.getenv("ZR_PORT")) 
 
 PROCOUNTOR_URL= str(os.getenv("PROCOUNTOR_URL")) 

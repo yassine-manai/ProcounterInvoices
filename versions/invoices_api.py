@@ -1,4 +1,4 @@
-import requests
+""" import requests
 from typing import Any, Dict, List, Optional, Union
 from config.config import BEARER_TOKEN, PROCOUNTOR_URL
 from procountor.enum.short_Enum import DocumentInvoiceType
@@ -224,3 +224,4 @@ def get_personal_verifications(invoice_type: Optional[DocumentInvoiceType] = Non
 
     response = requests.get(url, headers=headers, params=params)    
     return response
+ """

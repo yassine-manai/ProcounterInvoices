@@ -1,14 +1,42 @@
 import requests
 from config.check_error import handle_api_error
 from config.config import PROCOUNTOR_URL
-from functions.request_api import make_request
+from functions.request_api import get_headers, make_request
 from procountor.models.invoice_model import CommentDTO, Invoice
+from config.log_config import logger
 
 
 @handle_api_error
-def create_invoice(data: Invoice) -> requests.Response:
-    return make_request("POST", f"{PROCOUNTOR_URL}/invoices", json=data.dict())
+def create_invoices(data: Invoice) -> requests.Response:
+    return make_request("POST", f"{PROCOUNTOR_URL}/invoices", data.dict())
 
 @handle_api_error
 def add_invoice_comment(invoice_id: int, data: CommentDTO) -> requests.Response:
     return make_request("POST", f"{PROCOUNTOR_URL}/invoices/{invoice_id}/comments", json=data)
+
+
+def create_invoiqdssqce(data: Invoice) -> requests.Response:
+    url = f"{PROCOUNTOR_URL}/invoices"
+    headers = get_headers()
+    response = requests.post(url, json=data, headers=headers)
+    return response
+
+
+def create_invoice(invoice_data: Invoice):
+    url = f"{PROCOUNTOR_URL}/invoices"
+    headers = get_headers()
+
+    
+    # Convert the Invoice object to a dictionary
+    invoice_dict = invoice_data.model_dump(exclude_unset=True)
+    
+    # If using an older version of Pydantic, use .dict() instead:
+    # invoice_dict = invoice_data.dict(exclude_unset=True)
+
+    try:
+        response = requests.post(url, json=invoice_dict, headers=headers)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error creating invoice: {e}")
+        return None
