@@ -1,0 +1,4 @@
+04.06.2024;TAR-240604.PSV;2.0.11;2.1.4
+TradingDate;TariffKey;TariffName;ValidStart;ValidEnd;ValidityID
+04.06.2024;1;"Lyhytaika";15.01.2024 00:00:00;15.01.2025 00:00:00;1
+04.06.2024;2;"Alennus tariffi";13.02.2024 00:00:00;13.02.2025 00:00:00;2

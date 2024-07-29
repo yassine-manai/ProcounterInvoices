@@ -1,8 +1,15 @@
 from datetime import date, datetime, time
 from decimal import Decimal
+from typing import Any
 from pydantic import BaseModel
 
 
+class ProcountorAPIError(Exception):
+    message: str = ""
+    status_code: int = None
+    response_content: Any = None
+    
+    
 class EET_Data(BaseModel):
     """
     Pydantic model for EET (Event Entry and Exit) data.

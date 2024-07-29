@@ -1,15 +1,11 @@
 import sys
 from loguru import logger 
 
-#from config.config import LEVEL, LOG_ON_FILE, FILENAME, FILE_SIZE
-LEVEL="DEBUG"
-LOG_ON_FILE=True
-FILENAME="PIC.log"
-FILE_SIZE=100
+from config.config import LEVEL, LOG_ON_FILE, FILENAME, FILE_SIZE
+
 
 # Configure the logger with a custom log format
 logger.remove()  
-
 
 log_level = LEVEL.upper()
 

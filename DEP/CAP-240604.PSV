@@ -1,0 +1,2 @@
+04.06.2024;CAP-240604.PSV;2.0.11;2.1.4
+TradingDate;CellComputerNo;SiteCarParkNumber;ProductionNumber;PaymentNumber;ProductionDateTime;Device;TicketType;TicketSubType;ParkingArticle;Quantity;Amount;BookedValue;EPAN;ShiftID;Cashier;InvoiceReference;ParkingArtName;ValidDate

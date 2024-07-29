@@ -1,0 +1,143 @@
+
+install dep
+pip install pyinstaller
+
+
+run to exe file 
+pyinstaller --onefile -w 'filename.py's
+
+
+
+partnerId=0,
+    type="SALES_INVOICE",
+    status="UNFINISHED",
+    date="2024-07-18",
+    counterParty={
+        "contactPersonName": "Yassine Manai",
+        "identifier": "42544",
+        "taxCode": "14221422",
+        "customerNumber": "94072006",
+        "email": "yassinemanai955@gmail.com",
+        "counterPartyAddress": {
+            "name": "Yassine Manai",
+            "specifier": "Megrine",
+            "street": "beja",
+            "zip": "2044",
+            "city": "Megrine",
+            "country": "TUNISIA",
+            "subdivision": "BenArous"
+        },
+        "bankAccount": {
+            "accountNumber": "998999-10338",
+            "bic": "NDEAFIHH"
+        },
+        "einvoiceAddress": {
+            "operator": "string",
+            "address": "string",
+            "ediId": "string"
+        }
+    },
+    billingAddress={
+        "name": "Yassine Manai",
+        "specifier": "Megrine",
+        "street": "beja",
+        "zip": "2044",
+        "city": "Megrine",
+        "country": "TUNISIA",
+        "subdivision": "BenArous"
+    },
+    deliveryAddress={
+        "name": "Yassine Manai",
+        "specifier": "Megrine",
+        "street": "beja",
+        "zip": "2044",
+        "city": "Megrine",
+        "country": "TUNISIA",
+        "subdivision": "BenArous"
+    },
+    paymentInfo={
+        "paymentMethod": "BANK_TRANSFER",
+        "currency": "EUR",
+        "bankAccount": {
+            "accountNumber": "998999-10338",
+            "bic": "NDEAFIHH"
+        },
+        "dueDate": "2024-07-31",
+        "currencyRate": 1,
+        "paymentTermPercentage": 0,
+        "cashDiscount": {
+            "optionList": [
+                {
+                    "numberOfDays": 3,
+                    "discountPercentage": 1.25
+                }
+            ],
+            "cashDiscountsTermType": "FROM_INV_DATE"
+        },
+        "bankReferenceCode": "26013",
+        "bankReferenceCodeType": "RF",
+        "clearingCode": "0"
+    },
+    extraInfo={
+        "accountingByRow": True,
+        "unitPricesIncludeVat": True
+    },
+    discountPercent=10,
+    orderReference="",
+    invoiceRows=[
+        {
+            "productId": 12,
+            "product": "Parking station",
+            "productCode": "1145",
+            "quantity": 2,
+            "unit": "HOUR",
+            "unitPrice": 15,
+            "discountPercent": 2,
+            "vatPercent": 0,
+            "comment": "Night Parking service",
+            "startDate": "2024-07-18",
+            "endDate": "2024-08-18",
+        }
+    ],
+    vatStatus=0,
+    originalInvoiceNumber="string",
+    deliveryStartDate="2024-07-18",
+    deliveryEndDate="2024-07-18",
+    deliveryMethod="MAILING",
+    deliveryInstructions="string",
+    invoiceChannel="ELECTRONIC_INVOICE",
+    penaltyPercent=0,
+    language="ENGLISH",
+    invoiceTemplateId=0,
+    additionalInformation="string",
+    vatCountry="SWEDEN",
+    notes="string",
+    factoringContractId=0,
+    factoringText="string",
+    travelInformationItems=[
+        {
+            "departure": "string",
+            "arrival": "string",
+            "places": "string",
+            "purpose": "string"
+        }
+    ],
+    invoiceApprovalInformation={
+        "acceptors": [
+            {
+                "userId": 0
+            }
+        ],
+        "verifiers": [
+            {
+                "userId": 0
+            }
+        ]
+    },
+    orderNumber="string",
+    agreementNumber="string",
+    accountingCode="string",
+    deliverySite="string",
+    tenderReference="string",
+    version="2024-07-18T13:04:58.970Z",
+    isOffer=True

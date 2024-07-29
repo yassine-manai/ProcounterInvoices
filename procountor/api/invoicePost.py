@@ -6,9 +6,14 @@ from procountor.models.invoice_model import CommentDTO, Invoice
 from config.log_config import logger
 
 
+url_post = "https://pts-procountor.pubdev.azure.procountor.com/api/invoices"
+
+
 @handle_api_error
 def create_invoices(data: Invoice) -> requests.Response:
-    return make_request("POST", f"{PROCOUNTOR_URL}/invoices", data.dict())
+    logger.debug(f"\n {url_post} \n")
+    return make_request("POST", url_post, json=data)
+
 
 @handle_api_error
 def add_invoice_comment(invoice_id: int, data: CommentDTO) -> requests.Response:
@@ -28,14 +33,14 @@ def create_invoice(invoice_data: Invoice):
 
     
     # Convert the Invoice object to a dictionary
-    invoice_dict = invoice_data.model_dump(exclude_unset=True)
+    invoice_dict = invoice_data.model_dump()
     
     # If using an older version of Pydantic, use .dict() instead:
     # invoice_dict = invoice_data.dict(exclude_unset=True)
 
     try:
         response = requests.post(url, json=invoice_dict, headers=headers)
-        response.raise_for_status()  # Raises an HTTPError for bad responses
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         logger.error(f"Error creating invoice: {e}")

@@ -6,14 +6,19 @@ from functions.request_api import make_request
 from procountor.enum.short_Enum import DocumentInvoiceType
 from config import *
 
+url_post = "https://pts-procountor.pubdev.azure.procountor.com/api"
 
 @handle_api_error
 def search_invoices(params: Dict[str, Any] = None) -> requests.Response:
-    return make_request("GET", f"{PROCOUNTOR_URL}/invoices", params=params)
+    return make_request("GET", f"{url_post}/invoices", params=params)
 
 @handle_api_error
 def get_invoice(invoice_id: str) -> requests.Response:
     return make_request("GET", f"{PROCOUNTOR_URL}/invoices/{invoice_id}")
+
+@handle_api_error
+def get_all_invoice() -> requests.Response:
+    return make_request("GET", f"{url_post}/invoices")
 
 @handle_api_error
 def get_invoice_comments(invoice_id: int) -> requests.Response:

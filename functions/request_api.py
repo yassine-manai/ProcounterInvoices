@@ -1,21 +1,22 @@
-from typing import Dict, Any
+from typing import Dict
 import requests
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
-from config.config import BEARER_TOKEN
+from Models.model import ProcountorAPIError
 from config.log_config import logger
+from globalvars.glob_data import token_data
+
 
 def get_headers() -> Dict[str, str]:
+    global token_data
+    token = token_data.get("access_token")
+
+    logger.info(f"Token Fetched. . . ")
     return {
-        "Authorization": f"Bearer {BEARER_TOKEN}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
 
-class ProcountorAPIError(Exception):
-    message: str = ""
-    status_code: int = None
-    response_content: Any = None
-
-def make_request(method: str, url: str, **kwargs) -> requests.Response:
+def make_request(method: str, url: str, **kwargs) -> dict:
     headers = get_headers()
     logger.debug(f"Making {method} request to {url} with headers: {headers}")
     
@@ -24,12 +25,16 @@ def make_request(method: str, url: str, **kwargs) -> requests.Response:
         response.raise_for_status()
         
         logger.debug(f"Received response [{response.status_code}] from {url}")
-        return response
+        return response.json()  # Return the response content as a dictionary
 
     except HTTPError as http_err:
-        error = ProcountorAPIError(f"HTTP error occurred: {http_err}")
-        error.status_code = response.status_code
-        error.response_content = response.text
+        error_message = f"HTTP error occurred: {http_err}"
+        response_content = getattr(http_err.response, 'text', str(http_err))
+        status_code = getattr(http_err.response, 'status_code', 'Unknown')
+
+        error = ProcountorAPIError(error_message)
+        error.status_code = status_code
+        error.response_content = response_content
         logger.error(error.message)
         raise error
 

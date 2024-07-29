@@ -1,0 +1,2 @@
+04.06.2024;CRC-240604.PSV;2.0.11;2.1.4
+TradingDate;CellComputerNo;SiteCarParkNumber;PaymentNumber;DeviceNumber;TranDateTime;CreditcardCompany;Turnover;Cancelled;IdentType;MaskedPAN;CreditCardNo;Expiry;CardMedium;SBTransID;HostApproval;AuthorizationTime;BookingTime;TicketEPAN;STAN;ShiftID;BatchID;TerminalID;Authorization;HostTransID;Clearing;MerchantID;SurchargeAmt
