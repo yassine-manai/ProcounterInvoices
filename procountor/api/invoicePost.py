@@ -11,7 +11,7 @@ url_post = "https://pts-procountor.pubdev.azure.procountor.com/api/invoices"
 
 @handle_api_error
 def create_invoices(data: Invoice) -> requests.Response:
-    logger.debug(f"\n {url_post} \n")
+    logger.debug(f"\n {url_post}")
     return make_request("POST", url_post, json=data)
 
 

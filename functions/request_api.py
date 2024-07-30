@@ -16,15 +16,15 @@ def get_headers() -> Dict[str, str]:
         "Content-Type": "application/json"
     }
 
-def make_request(method: str, url: str, **kwargs) -> dict:
+def make_request(method: str, url: str, **kwargs):
     headers = get_headers()
-    logger.debug(f"Making {method} request to {url} with headers: {headers}")
+    logger.debug(f"Making {method} request to {url} with headers: {headers} and kwargs: {kwargs}")
     
     try:
         response = requests.request(method, url, headers=headers, **kwargs)
         response.raise_for_status()
         
-        logger.debug(f"Received response [{response.status_code}] from {url}")
+        logger.debug(f"Received response [{response.status_code}] from {url}: {response.text}")
         return response.json()  # Return the response content as a dictionary
 
     except HTTPError as http_err:
@@ -35,7 +35,7 @@ def make_request(method: str, url: str, **kwargs) -> dict:
         error = ProcountorAPIError(error_message)
         error.status_code = status_code
         error.response_content = response_content
-        logger.error(error.message)
+        logger.error(f"{error.message} - Status Code: {status_code}, Response Content: {response_content}")
         raise error
 
     except ConnectionError as conn_err:
