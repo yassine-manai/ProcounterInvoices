@@ -1,32 +1,38 @@
+import glob
+import pandas as pd
 from datetime import datetime
+from collections import defaultdict
+from functions.data_format import date_format
 from classes.ticket_epan import TicketEpan
 from config.config import ACCOUNT_NUMBER, BIC
 from config.log_config import logger
-from functions.data_format import date_format
 from functions.discount_fn import calculate_discount_percentage
 from procountor.api.invoicePost import create_invoices
 from funcsv.csvFunctions import read_psv
 from functions.fetch_token import fetch_data_token 
 from collections import defaultdict
 
+
 # Start Execution
-logger.info("Starting Process . . . . . . . . . . . . . . . . . . . . .") 
+logger.info("Starting Process for monthly invoicing . . . . . . . . . . . . . . . . . . . . .")
 
 # Get current date
 date_str = datetime.now().strftime("%Y-%m-%d")
 logger.debug(f"Current date: {date_str}")
 
 # Define file paths
-ppa_file_path = "./DEP/PPA-240604.PSV"
-crp_file_path = "./DEP/CRP-240604.PSV"
-output_csv_path = "./DEP/1file.csv"
+ppa_files_path = "./DEP/PPA-*.PSV"
+crp_files_path = "./DEP/CRP-*.PSV" 
 
-# Read data from files
-logger.debug(f"Reading PPA file from {ppa_file_path}")
-PPA = read_psv(ppa_file_path)
+# Read data from all PPA files
+logger.debug(f"Reading PPA files from {ppa_files_path}")
+ppa_files = glob.glob(ppa_files_path)
+PPA = pd.concat([read_psv(file) for file in ppa_files], ignore_index=True)
 
-logger.debug(f"Reading CRP file from {crp_file_path}")
-CRP = read_psv(crp_file_path)
+# Read data from all CRP files
+logger.debug(f"Reading CRP files from {crp_files_path}")
+crp_files = glob.glob(crp_files_path)
+CRP = pd.concat([read_psv(file) for file in crp_files], ignore_index=True)
 
 # Fetch and log token data
 fetch_data_token()
@@ -34,18 +40,15 @@ logger.info("Token data fetched and saved")
 
 # Process PPA tickets
 epanlist = PPA.TicketEPAN.unique()
-logger.debug(f"\n Unique EPANs found: {len(epanlist)} \n")
+logger.debug(f"Unique EPANs found: {len(epanlist)}")
 
 company_epans = defaultdict(list)
 for epan in epanlist:
     ticket_epan = TicketEpan(epan)
     company_epans[int(ticket_epan.company_id)].append(epan)
 
-
 # Create invoices
 for company_id, epans in company_epans.items():
-    company_id = int(company_id)  
-    
     invoice_data = {
         "type": "SALES_INVOICE", 
         "status": "UNFINISHED",
@@ -87,10 +90,11 @@ for company_id, epans in company_epans.items():
         "version": "2024-07-30T15:04:58.970Z"
     }
 
+
     # Get company information
     logger.debug(f"Fetching company information for company_id: {company_id}")
-    query_glob = CRP.query(f'Comp_No == {int(company_id)}')
-
+    query_glob = CRP.query(f'Comp_No == {company_id}')
+    
     if not query_glob.empty:
         company_nbr = query_glob['Comp_No'].iloc[0]
         company_name = query_glob['Comp_Name'].iloc[0]
@@ -133,14 +137,14 @@ for company_id, epans in company_epans.items():
             logger.warning(f"No data found for EPAN: {epan}")
             continue
         
+        # Aggregate data for the entire month
         sum_Quantity = filtered_df['Quantity'].sum()
-        Discount = filtered_df['Discounted'].iloc[0]
-        Price = filtered_df['Price'].iloc[0]
-        Turnover = filtered_df['Turnover'].iloc[0]
-        NetPrice = filtered_df['NetPrice'].iloc[0]
+        Discount = filtered_df['Discounted'].mean()  
+        Price = filtered_df['Price'].mean()
+        Turnover = filtered_df['Turnover'].sum()
+        NetPrice = filtered_df['NetPrice'].sum()
         
-        query = CRP.query(f'Comp_No == {int(company_id)} & PTCPT_No == {ptct_id}')
-
+        query = CRP.query(f'Comp_No == {company_id} & PTCPT_No == {ptct_id}')
         if not query.empty:
             participant_lname = query['PTCPT_Surname'].iloc[0]
             company_startDate = query['PTCPT_ContractStart'].iloc[0]
@@ -172,4 +176,4 @@ for company_id, epans in company_epans.items():
     else:
         logger.error(f"Failed to create invoice for company {company_id}")
 
-logger.info("Process completed . . . . . . . . . . . . . . . . . . . .")
+logger.info("Monthly invoicing process completed . . . . . . . . . . . . . . . . . . . .")

@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-from typing import Dict, List
+from typing import Dict
+from config.log_config import logger
 
 
 # read file in folder , read all file .psv and return files in folder as dictionary
@@ -15,10 +16,9 @@ def read_psv_from_folder(folder_path: str) -> Dict[str, pd.DataFrame]:
             
     return df_dict
 
-
-# read .psv file and return a dataframe object
-def read_psv(file_path: str) -> pd.DataFrame:
-    df = pd.read_csv(file_path, sep=';', skiprows=1)
+def read_psv(file_path: str, encoding: str = 'ISO-8859-1') -> pd.DataFrame:
+    df = pd.read_csv(file_path, sep=';', skiprows=1, encoding=encoding)
+    logger.debug(f"Read {file_path} . . . ")
     return df
 
 

@@ -1,3 +1,6 @@
+import pandas as pd
+from config.log_config import logger
+
 class TicketEpanError(Exception):
     pass
 
@@ -14,7 +17,7 @@ class TicketEpan:
         self.zr_number = ticket_epan[7:11]
         self.season_parker = ticket_epan[11:13]
         self.company_id = ticket_epan[13:18]
-        self.ptcpid = ticket_epan[18:]
+        self.ptcpid = ticket_epan[18:23]
 
 
 
@@ -37,3 +40,30 @@ class TicketEpan:
             "company_id": self.company_id,
             "ptcpid": self.ptcpid
         }
+
+
+
+class TicketEPANSummary:
+    def __init__(self, dataframe: pd.DataFrame):
+        self.dataframe = dataframe
+
+    def summarize(self) -> list:
+        epan_list = self.dataframe['TicketEPAN'].unique()
+        summaries = []
+        
+        for epan in epan_list:
+            #logger.debug(f"Working on Epan = {epan}")
+            
+            filtered_df = self.dataframe[self.dataframe['TicketEPAN'] == epan]
+            summary = {
+                'epan': epan,
+                'sum_Quantity': int(filtered_df['Quantity'].sum()),
+                'sum_Price': int(filtered_df['Price'].sum()),
+                'sum_Turnover': int(filtered_df['Turnover'].sum()),
+                'sum_NetPrice': int(filtered_df['NetPrice'].sum()),
+                'sum_NetTurnover': int(filtered_df['NetTurnover'].sum()),
+                'sum_VATAmount': int(filtered_df['VATAmount'].sum())
+            }
+            summaries.append(summary)
+        
+        return summaries
