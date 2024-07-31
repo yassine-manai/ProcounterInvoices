@@ -1,5 +1,4 @@
 from datetime import datetime
-import os
 
 def date_format(date_str) -> str:
     date_formats = ["%d/%m/%Y", "%d-%m-%Y","%d.%m.%Y" ]

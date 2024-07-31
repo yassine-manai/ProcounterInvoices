@@ -18,7 +18,7 @@ def fetch_data_token():
     }
 
     try:
-        logger.debug(f"Making a POST request")
+        logger.debug(f"Making a POST request . . .")
 
         response = requests.post(url, headers=headers, data=data)
         

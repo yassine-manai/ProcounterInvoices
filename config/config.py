@@ -41,6 +41,7 @@ CLIENT_ID = str(os.getenv("CLIENT_ID")) if os.getenv("CLIENT_ID") else config.ge
 CLIENT_SECRET = str(os.getenv("CLIENT_SECRET")) if os.getenv("CLIENT_SECRET") else config.get('PROCOUNTER', 'CLIENT_SECRET', fallback='default_client_secret')
 API_KEY = str(os.getenv("API_KEY")) if os.getenv("API_KEY") else config.get('PROCOUNTER', 'API_KEY', fallback='default_api_key')
 
+DATA_DIRECTORY = str(os.getenv("DATA_DIRECTORY")) if os.getenv("DATA_DIRECTORY") else config.get('PROCOUNTER', 'DATA_DIRECTORY', fallback='./DEP')
 
 ACCOUNT_NUMBER = str(os.getenv("ACCOUNT_NUMBER")) if os.getenv("ACCOUNT_NUMBER") else config.get('USER_DATA', 'ACCOUNT_NUMBER', fallback='FI6499899900010338')
 BIC = str(os.getenv("BIC")) if os.getenv("BIC") else config.get('USER_DATA', 'BIC', fallback='NDEAFIHH')

@@ -52,7 +52,7 @@ class TicketEPANSummary:
         summaries = []
         
         for epan in epan_list:
-            #logger.debug(f"Working on Epan = {epan}")
+            logger.debug(f"Working on Epan = {epan}")
             
             filtered_df = self.dataframe[self.dataframe['TicketEPAN'] == epan]
             summary = {

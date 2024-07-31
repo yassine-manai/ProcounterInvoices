@@ -22,14 +22,14 @@ def read_psv(file_path: str, encoding: str = 'ISO-8859-1') -> pd.DataFrame:
     return df
 
 
-class TicketEpan:
+class TicketEpans:
     def __init__(self, ticket_epan):
         self.parking = ticket_epan[:2]
         self.clientid = ticket_epan[2:7]
         self.zr_number = ticket_epan[7:11]
         self.season_parker = ticket_epan[11:13]
         self.company_id = ticket_epan[13:18]
-        self.ptcpid = ticket_epan[18:]
+        self.ptcpid = ticket_epan[18:23]
 
     def to_dict(self):
         return {
