@@ -4,3 +4,5 @@ nenv
 venv
 vnv
 DEP
+build
+dist
