@@ -1,175 +1,108 @@
-from datetime import datetime
-from classes.ticket_epan import TicketEpan
-from config.config import ACCOUNT_NUMBER, BIC
+import time
 from config.log_config import logger
-from functions.data_format import date_format
-from functions.discount_fn import calculate_discount_percentage
-from procountor.api.invoicePost import create_invoices
-from funcsv.csvFunctions import read_psv
-from functions.fetch_token import fetch_data_token 
-from collections import defaultdict
 
+from datetime import datetime
+from invoices.FlatFees.flat_fees_c1 import flatFee_c1
+from invoices.FlatFees.flat_Fees_c2 import flatFee_c2
+
+from invoices.FlatFees_copy.flat_fees_c1_cp import flatFee_c1_cp
+from invoices.FlatFees_copy.flat_Fees_c2_cp import flatFee_c2_cp
+
+from functions.read_psv_files import read_file
+from functions.animation import animate
+from functions.fetch_token import fetch_data_token 
+from functions.img_invoices import fetch_invoices_and_images
+from classes.ticket_epan import TicketEpan
 # Start Execution
 logger.info("Starting Process . . . . . . . . . . . . . . . . . . . . .") 
 
 # Get current date
 date_str = datetime.now().strftime("%Y-%m-%d")
-logger.debug(f"Current date: {date_str}")
+cur_month = month = time.strftime("%m")
+
+
+logger.debug(f"Current date: {date_str} + Current month: {cur_month}")
 
 # Define file paths
-ppa_file_path = "./DEP/PPA-240604.PSV"
-crp_file_path = "./DEP/CRP-240604.PSV"
-output_csv_path = "./DEP/1file.csv"
+ppa_file_path = "./DEP/PPA-240502.PSV"
+crp_file_path = "./DEP/CRP-240526.PSV"
+str_file_path = "./DEP/STR-240606.PSV"
+
+
+ppa_c2 = f"./DEP/PPA-*.PSV"
+crp_c2= f"./DEP/CRP-*.PSV"
+
+
+
 
 # Read data from files
+
 logger.debug(f"Reading PPA file from {ppa_file_path}")
-PPA = read_psv(ppa_file_path)
+PPA = read_file(ppa_file_path)
 
 logger.debug(f"Reading CRP file from {crp_file_path}")
-CRP = read_psv(crp_file_path)
+CRP = read_file(crp_file_path)
 
+logger.debug(f"Reading STR file from {str_file_path}")
+STR = read_file(str_file_path)
+
+
+    
+if PPA.TicketEPAN:
+    flatFee_c1(date_str,PPA,CRP)
+    logger.info("Flat Fee invoice created successfully")
+else:
+    logger.error("Failed to find TicketEPAN in PPA file")
+
+
+if STR.TicketEPAN:
+    flatFee_c1_cp(date_str,PPA,CRP)
+    logger.info("Flat Fee invoice created successfully")
+else:
+    logger.error("Failed to find TicketEPAN in STR file")
+
+
+"""   
 # Fetch and log token data
-fetch_data_token()
+#fetch_data_token()
 logger.info("Token data fetched and saved")    
 
-# Process PPA tickets
-epanlist = PPA.TicketEPAN.unique()
-logger.debug(f"\n Unique EPANs found: {len(epanlist)} \n")
 
-company_epans = defaultdict(list)
-for epan in epanlist:
-    ticket_epan = TicketEpan(epan)
-    company_epans[int(ticket_epan.company_id)].append(epan)
-
-
-# Create invoices
-for company_id, epans in company_epans.items():
-    company_id = int(company_id)  
+# create FlatFee invoice for one day --> Case 1
+logger.info("Creating FlatFee invoice . . . ")  
+ 
+if flatFee_c1 (date_str,PPA,CRP):
+    logger.info("Flat Fee invoice created successfully")
+else:
+    logger.error("Failed to create flat fee invoice")
+ 
     
-    invoice_data = {
-        "type": "SALES_INVOICE", 
-        "status": "UNFINISHED",
-        "date": "2024-07-18",
-        "counterParty": {},
-        "billingAddress": {},
-        "paymentInfo": {
-            "paymentMethod": "BANK_TRANSFER",
-            "currency": "EUR",
-            "bankAccount": {
-                "accountNumber": str(ACCOUNT_NUMBER),
-                "bic": str(BIC)
-            },
-            "dueDate": "2024-07-31",
-            "currencyRate": 1,
-            "paymentTermPercentage": 0,
-            "bankReferenceCode": "26013",
-            "clearingCode": "0"
-        },
-        "extraInfo": {
-            "accountingByRow": True,
-            "unitPricesIncludeVat": True
-        },
-        "discountPercent": 10,
-        "orderReference": "",
-        "invoiceRows": [],
-        "vatStatus": 1,
-        "deliveryStartDate": "2024-07-31",
-        "deliveryEndDate": "2024-08-18",
-        "deliveryMethod": "ONLINE",
-        "deliveryInstructions": "Nothing",
-        "invoiceChannel": "EMAIL",
-        "language": "ENGLISH",
-        "additionalInformation": "Thanks for using our service",
-        "notes": "Test information",
-        "factoringText": "string",
-        "number": f"55958-{company_id}", 
-        "agreementNumber": f"FIN072024-{company_id}", 
-        "version": "2024-07-30T15:04:58.970Z"
-    }
 
-    # Get company information
-    logger.debug(f"Fetching company information for company_id: {company_id}")
-    query_glob = CRP.query(f'Comp_No == {int(company_id)}')
+# create FlatFee invoice for one month --> Case 1
+logger.info("Creating FlatFee Monthly invoice . . . ")  
+ 
+if flatFee_c2(date_str,ppa_c2,crp_c2):
+    logger.info("Flat Fee Monthly invoice created successfully")
+else:
+    logger.error("Failed to create Monthly Flat Fee invoice")
 
-    if not query_glob.empty:
-        company_nbr = query_glob['Comp_No'].iloc[0]
-        company_name = query_glob['Comp_Name'].iloc[0]
-        company_street = query_glob['Street'].iloc[0]
-        company_zipCode = query_glob['ZipCode'].iloc[0]
-        company_city = query_glob['City'].iloc[0]
-        company_phone = query_glob['Phone'].iloc[0]
+    
+# create FlatFee+overtime invoice --> Case 2
+logger.info("Creating FlatFeeOverTime invoice . . . ")  
 
-        # Set company information in invoice data
-        invoice_data["counterParty"] = {
-            "identifier": str(company_nbr),
-            "customerNumber": str(company_phone),
-            "email": "test@mail.com",
-            "counterPartyAddress": {
-                "name": str(company_name),
-                "street": str(company_street),
-                "zip": str(company_zipCode),
-                "city": str(company_city),
-            }
-        }
-        invoice_data["billingAddress"] = {
-            "name": str(company_name),
-            "street": str(company_street),
-            "zip": str(company_zipCode),
-            "city": str(company_city),
-        }
-    else:
-        logger.error(f"No data found for company_id: {company_id}")
-        continue
 
-    # Process each EPAN for this company
-    for epan in epans:
-        ticket_epan = TicketEpan(epan)
-        
-        ptct_id = int(ticket_epan.ptcpid)
-        type_id = int(ticket_epan.season_parker)
-        
-        filtered_df = PPA[PPA['TicketEPAN'] == epan]
-        if filtered_df.empty:
-            logger.warning(f"No data found for EPAN: {epan}")
-            continue
-        
-        sum_Quantity = filtered_df['Quantity'].sum()
-        Discount = filtered_df['Discounted'].iloc[0]
-        Price = filtered_df['Price'].iloc[0]
-        Turnover = filtered_df['Turnover'].iloc[0]
-        NetPrice = filtered_df['NetPrice'].iloc[0]
-        
-        query = CRP.query(f'Comp_No == {int(company_id)} & PTCPT_No == {ptct_id}')
+# create Company pooling invoice --> Case 3
+logger.info("Creating Company Pooling invoice . . . ")  
 
-        if not query.empty:
-            participant_lname = query['PTCPT_Surname'].iloc[0]
-            company_startDate = query['PTCPT_ContractStart'].iloc[0]
-            company_endDate = query['PTCPT_ContractEnd'].iloc[0]
 
-            discount_Val = calculate_discount_percentage(Price, Turnover)
-            
-            invoice_row = {
-                "product": str(participant_lname),
-                "productCode": str(type_id),
-                "quantity": float(sum_Quantity),
-                "unit": "NO_UNIT",
-                "unitPrice": float(Price),
-                "discountPercent": float(discount_Val),
-                "vatPercent": 14,
-                "startDate": date_format(company_startDate),
-                "endDate": date_format(company_endDate)
-            }
-            invoice_data["invoiceRows"].append(invoice_row)
-        else:
-            logger.warning(f"No data found for ptct_id: {ptct_id} in company_id: {company_id}")
-            continue
 
-    # Create invoice for this company
-    logger.debug(f"Creating invoice for company {company_id}")
-    response = create_invoices(invoice_data)
-    if response:
-        logger.info(f"Invoice created for company {company_id}. Response: {response}")
-    else:
-        logger.error(f"Failed to create invoice for company {company_id}")
+# Get images invoices from the server 
+logger.info("Start Save images Process . . . ")   
+#animate()
+#fetch_invoices_and_images()
+logger.info("Images Saved . . . ")   
+
+
 
 logger.info("Process completed . . . . . . . . . . . . . . . . . . . .")
+"""

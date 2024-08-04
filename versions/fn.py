@@ -5,7 +5,7 @@ import pandas as pd
 file_path = "/mnt/c/Users/yassi/Desktop/AsteroIdea/Projects Specs/Finland - Procounter Invoicing API Connector/DEP/EET-240604.PSV"
 
 # read one file 
-def read_file(file_path):
+def read_files(file_path):
     if file_path.endswith('.csv'):
         df = pd.read_csv(file_path)
         
@@ -22,7 +22,7 @@ def read_file(file_path):
 
 
 
-rf = read_file(file_path)
+rf = read_files(file_path)
 logger.info(rf)
 
 

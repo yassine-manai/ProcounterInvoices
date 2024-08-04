@@ -30,7 +30,7 @@ def fetch_data_token():
             token_data['token_type'] = data.get('token_type',"Bearer")
             token_data['expires_in'] = data.get('expirers_in',3600)
             
-            logger.debug(f" Data fetched : {token_data} with status code: {response.status_code}")
+            #logger.debug(f" Data fetched : {token_data} with status code: {response.status_code}")
 
         
         else:

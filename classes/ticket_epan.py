@@ -1,5 +1,5 @@
 import pandas as pd
-from config.log_config import logger
+#from config.log_config import logger
 
 class TicketEpanError(Exception):
     pass
@@ -15,7 +15,7 @@ class TicketEpan:
         self.parking = ticket_epan[:2]
         self.clientid = ticket_epan[2:7]
         self.zr_number = ticket_epan[7:11]
-        self.season_parker = ticket_epan[11:13]
+        self.type_parker = ticket_epan[11:13]
         self.company_id = ticket_epan[13:18]
         self.ptcpid = ticket_epan[18:23]
 
@@ -26,7 +26,7 @@ class TicketEpan:
             self.parking.isdigit() and
             self.clientid.isdigit() and
             self.zr_number.isdigit() and
-            self.season_parker.isdigit() and
+            self.type_parker.isdigit() and
             self.company_id.isdigit() and
             self.ptcpid.isdigit()  
         )
@@ -36,10 +36,11 @@ class TicketEpan:
             "parking": self.parking,
             "clientid": self.clientid,
             "zr_number": self.zr_number,
-            "season_parker": self.season_parker,
+            "type_parker": self.type_parker,
             "company_id": self.company_id,
             "ptcpid": self.ptcpid
         }
+        
 
 
 
@@ -52,7 +53,7 @@ class TicketEPANSummary:
         summaries = []
         
         for epan in epan_list:
-            logger.debug(f"Working on Epan = {epan}")
+            #logger.debug(f"Working on Epan = {epan}")
             
             filtered_df = self.dataframe[self.dataframe['TicketEPAN'] == epan]
             summary = {
@@ -67,3 +68,8 @@ class TicketEPANSummary:
             summaries.append(summary)
         
         return summaries
+    
+    
+    
+tk = TicketEpan("02494471016011054158030850")
+print(tk.to_dict())

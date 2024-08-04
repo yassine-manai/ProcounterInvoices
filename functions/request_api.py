@@ -10,32 +10,41 @@ def get_headers() -> Dict[str, str]:
     global token_data
     token = token_data.get("access_token")
 
-    logger.info(f"Token Fetched. . . ")
+    #logger.info(f"Token Fetched : {token}")
     return {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
-
-def make_request(method: str, url: str, **kwargs):
+def make_request(method: str, url: str, **kwargs) -> dict:
     headers = get_headers()
-    logger.debug(f"Making {method} request to {url} with headers: {headers} and kwargs: {kwargs}")
+    logger.debug(f"Making {method} request to {url} with headers: {headers}")
     
     try:
         response = requests.request(method, url, headers=headers, **kwargs)
+        
+        # Log the full response
+        logger.debug(f"Received response [{response.status_code}] from {url}")
+        logger.debug(f"Response headers: {dict(response.headers)}")
+        logger.debug(f"Response content: {response.text}")
+        
         response.raise_for_status()
         
-        logger.debug(f"Received response [{response.status_code}] from {url}: {response.text}")
-        return response.json()  # Return the response content as a dictionary
+        # Return a dictionary with all response information
+        return {
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'content': response.text,
+            'json': response.json() if response.headers.get('Content-Type', '').startswith('application/json') else None
+        }
 
     except HTTPError as http_err:
-        error_message = f"HTTP error occurred: {http_err}"
-        response_content = getattr(http_err.response, 'text', str(http_err))
-        status_code = getattr(http_err.response, 'status_code', 'Unknown')
-
-        error = ProcountorAPIError(error_message)
-        error.status_code = status_code
-        error.response_content = response_content
-        logger.error(f"{error.message} - Status Code: {status_code}, Response Content: {response_content}")
+        error = ProcountorAPIError(f"HTTP error occurred: {http_err}")
+        error.status_code = response.status_code
+        error.response_content = response.text
+        error.response_headers = dict(response.headers)
+        logger.error(f"HTTP Error: {error.message}")
+        logger.error(f"Status Code: {error.status_code}")
+        logger.error(f"Response Content: {error.response_content}")
         raise error
 
     except ConnectionError as conn_err:

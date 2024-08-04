@@ -1,5 +1,5 @@
 import requests
-from config.check_error import handle_api_error
+from functions.check_error import handle_api_error
 from config.config import PROCOUNTOR_URL
 from functions.request_api import make_request
 

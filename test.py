@@ -8,7 +8,7 @@ from config.config import ACCOUNT_NUMBER, BIC
 from config.log_config import logger
 from functions.discount_fn import calculate_discount_percentage
 from procountor.api.invoicePost import create_invoices
-from funcsv.csvFunctions import read_psv
+from functions.read_psv_files import read_psv
 from functions.fetch_token import fetch_data_token 
 from collections import defaultdict
 

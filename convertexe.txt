@@ -1,11 +1,12 @@
 
 install dep
 pip install pyinstaller
-
+pip install pillow
 
 run to exe file 
 pyinstaller --onefile -w 'filename.py's
 
+pyinstaller.exe --onefile --windowed --noupx --icon=./assets/icon_search.png main.py
 
 
 partnerId=0,
