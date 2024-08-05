@@ -8,7 +8,7 @@ from invoices.FlatFees.flat_Fees_c2 import flatFee_c2
 from invoices.FlatFees_copy.flat_fees_c1_cp import flatFee_c1_cp
 from invoices.FlatFees_copy.flat_Fees_c2_cp import flatFee_c2_cp
 
-from functions.read_psv_files import read_file
+from functions.read_psv_files import read_file, read_psv_from_folder
 from functions.animation import animate
 from functions.fetch_token import fetch_data_token 
 from functions.img_invoices import fetch_invoices_and_images
@@ -34,9 +34,7 @@ crp_c2= f"./DEP/CRP-*.PSV"
 
 
 
-
 # Read data from files
-
 logger.debug(f"Reading PPA file from {ppa_file_path}")
 PPA = read_file(ppa_file_path)
 
@@ -47,20 +45,41 @@ logger.debug(f"Reading STR file from {str_file_path}")
 STR = read_file(str_file_path)
 
 
+stepan = read_psv_from_folder("./DEP")
+logger.success(f"Files Found :  {len(stepan)}")
+
+
+
+""" for st in stepan:
+    if hasattr(st, 'TicketEPAN') and st.TicketEPAN:
+        logger.success(f"TicketEPAN found in {st}")
+    else:
+        logger.error(f"TicketEPAN not found in {st}")
+  """
+
+for st in stepan:
+    if st.TicketEPAN in st and st['TicketEPAN']:
+        logger.success(f"EPAN found in {st}")
+    else:
+        logger.error(f"EPAN not found in {st}")
+
+
     
-if PPA.TicketEPAN:
+""" if PPA.TicketEPAN:
+    logger.success("Ticket EPAN found in PPA file")
     flatFee_c1(date_str,PPA,CRP)
-    logger.info("Flat Fee invoice created successfully")
+    logger.success("Flat Fee invoice created successfully")
 else:
     logger.error("Failed to find TicketEPAN in PPA file")
 
 
 if STR.TicketEPAN:
+    logger.success("Ticket EPAN found in STR file")
     flatFee_c1_cp(date_str,PPA,CRP)
-    logger.info("Flat Fee invoice created successfully")
+    logger.success("Flat Fee invoice created successfully")
 else:
     logger.error("Failed to find TicketEPAN in STR file")
-
+ """
 
 """   
 # Fetch and log token data

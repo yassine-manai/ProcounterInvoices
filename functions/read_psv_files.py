@@ -5,18 +5,18 @@ from config.log_config import logger
 
 
 # read file in folder , read all file .psv and return files in folder as dictionary
-def read_psv_from_folder(folder_path: str) -> Dict[str, pd.DataFrame]:
-    df_dict={}
+def read_psv_from_folder(folder_path: str, encoding: str = 'ISO-8859-1') -> Dict[str, pd.DataFrame]:
+    df_dict = {}
 
     for file_name in os.listdir(folder_path):
         if file_name.endswith('.PSV'):
             file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path, sep='|', skiprows=1,header=None)
+            df = pd.read_csv(file_path, sep='|', skiprows=0, encoding=encoding)
             df_dict[file_name] = df
-            
+
     return df_dict
 
-
+# read file in folder .psv and return dataframe
 def read_file(file_path: str, encoding: str = 'ISO-8859-1') -> pd.DataFrame:
     _, file_extension = os.path.splitext(file_path)
     if file_extension.lower() == '.psv':
@@ -29,8 +29,6 @@ def read_file(file_path: str, encoding: str = 'ISO-8859-1') -> pd.DataFrame:
     df = pd.read_csv(file_path, sep=separator, skiprows=1, encoding=encoding)
     logger.debug(f"Read {file_path} with separator '{separator}' . . . ")
     return df
-
-
 
 
 

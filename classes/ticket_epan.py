@@ -70,6 +70,3 @@ class TicketEPANSummary:
         return summaries
     
     
-    
-tk = TicketEpan("02494471016011054158030850")
-print(tk.to_dict())
