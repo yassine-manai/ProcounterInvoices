@@ -12,6 +12,30 @@ from collections import defaultdict
 
 
 def flatFee_c2(date_str,ppa_c2,crp_c2):
+    
+    """
+        Processes monthly invoicing by reading data from PPA and CRP files, aggregating ticket information, and creating invoices.
+
+        The function performs the following steps:
+        1. Reads and concatenates PPA and CRP data from multiple files.
+        2. Fetches and logs token data for API authentication.
+        3. Groups tickets by company using the TicketEPAN field.
+        4. For each company, retrieves relevant information and constructs invoice data.
+        5. Aggregates ticket data for the month, calculates discounts, and creates invoice rows.
+        6. Calls an external API to create invoices and logs the response.
+
+        Parameters:
+            date_str (str): The date string to be used in the invoice.
+            ppa_c2 (str): File path pattern for PPA files (e.g., 'path/to/ppa/files/*.psv').
+            crp_c2 (str): File path pattern for CRP files (e.g., 'path/to/crp/files/*.psv').
+
+        Returns:
+            None
+
+        Raises:
+            Exception: Logs errors if any issues occur while fetching data or creating invoices.
+    """
+    
     logger.info("Starting Process for monthly invoicing . . . . . . . . . . . . . . . . . . . . .")
 
     # Read data from all PPA files

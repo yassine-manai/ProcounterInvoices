@@ -2,10 +2,33 @@ import pandas as pd
 from config.log_config import logger
 
 class FilePPD:
+    """
+    A class to process and extract unique ticket information from a DataFrame.
+
+    Attributes:
+        dataframe (pd.DataFrame): The DataFrame containing ticket data.
+    """
+    
     def __init__(self, dataframe: pd.DataFrame):
+        """
+        Constructs all the necessary attributes for the FilePPD object.
+
+        Parameters:
+            dataframe (pd.DataFrame): The DataFrame containing ticket data.
+        """
         self.dataframe = dataframe
 
     def rslts(self) -> list:
+        """
+        Processes the DataFrame to extract and summarize unique ticket information.
+
+        This method filters the DataFrame for each unique 'TicketEPAN' value,
+        aggregates the relevant data, and returns a list of dictionaries containing
+        summarized information for each 'TicketEPAN'.
+
+        Returns:
+            list: A list of dictionaries, each containing summarized ticket data for a unique 'TicketEPAN'.
+        """
         epan_list = self.dataframe['TicketEPAN'].unique()
         ppd_list = []
 

@@ -5,6 +5,38 @@ from config.config import API_KEY, CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, PROCOUN
 
 
 def fetch_data_token():
+    
+    """
+    Fetches an access token from the Procountor API and updates the global `token_data` dictionary.
+
+    This function makes a POST request to the token endpoint of the Procountor API using
+    the provided client credentials and API key. If the request is successful, it updates
+    the global `token_data` dictionary with the access token, token type, and expiry time.
+    If the request fails or an error occurs, appropriate messages are logged.
+
+    Global Variables:
+        token_data (dict): A global dictionary where the access token, token type, and expiry time
+                           are stored.
+
+    Raises:
+        Exception: Logs any exceptions that occur during the request process.
+    """
+    
+    """
+    Fetches an access token from the Procountor API and updates the global `token_data` dictionary.
+
+    This function makes a POST request to the token endpoint of the Procountor API using
+    the provided client credentials and API key. If the request is successful, it updates
+    the global `token_data` dictionary with the access token, token type, and expiry time.
+    If the request fails or an error occurs, appropriate messages are logged.
+
+    Global Variables:
+        token_data (dict): A global dictionary where the access token, token type, and expiry time
+                           are stored.
+
+    Raises:
+        Exception: Logs any exceptions that occur during the request process.
+    """
     global token_data
     url = PROCOUNTOR_URL_TOKEN
     headers = {

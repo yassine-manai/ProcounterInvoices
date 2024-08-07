@@ -1,10 +1,43 @@
 import os
 import requests
 from config.config import PROCOUNTOR_URL
-from functions.request_api import get_headers  
+from functions.get_headers import get_headers
 from config.log_config import logger
 
 def fetch_invoices_and_images():
+    
+    """
+    Fetches invoice data and associated images from the Procountor API and saves the images locally.
+
+    This function performs the following tasks:
+    1. Retrieves invoice data from the Procountor API.
+    2. Creates a directory named 'images_invoices' if it does not already exist.
+    3. For each invoice, it fetches the associated image and saves it to the 'images_invoices' directory.
+    
+    It handles errors during the API request and image fetching, and logs appropriate messages.
+
+    Global Variables:
+        None
+
+    Raises:
+        requests.RequestException: Logs errors if the API requests fail.
+    """
+    """
+    Fetches invoice data and associated images from the Procountor API and saves the images locally.
+
+    This function performs the following tasks:
+    1. Retrieves invoice data from the Procountor API.
+    2. Creates a directory named 'images_invoices' if it does not already exist.
+    3. For each invoice, it fetches the associated image and saves it to the 'images_invoices' directory.
+    
+    It handles errors during the API request and image fetching, and logs appropriate messages.
+
+    Global Variables:
+        None
+
+    Raises:
+        requests.RequestException: Logs errors if the API requests fail.
+    """
     base_url = f"{PROCOUNTOR_URL}/invoices"
     headers = get_headers()
     

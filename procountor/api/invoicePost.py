@@ -1,7 +1,8 @@
 import requests
 from functions.check_error import handle_api_error
 from config.config import PROCOUNTOR_URL
-from functions.request_api import get_headers, make_request
+from functions.request_api import make_request
+from functions.get_headers import get_headers
 from procountor.models.invoice_model import CommentDTO, Invoice
 from config.log_config import logger
 

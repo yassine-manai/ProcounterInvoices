@@ -9,6 +9,29 @@ from collections import defaultdict
 
 def flatFee_c1(date_str,PPA,CRP):
 
+    """
+        Processes ticket data and creates invoices for each company.
+
+        This function performs the following tasks:
+        1. Processes unique TicketEPAN values from the given DataFrame `PPA` to group tickets by company.
+        2. For each company, creates an invoice with appropriate details including company information and invoice rows.
+        3. Fetches company information from the `CRP` DataFrame and populates the invoice with relevant details.
+        4. Calculates discount percentages and prepares invoice rows based on the ticket data.
+        5. Calls an external API to create invoices for each company.
+
+        Parameters:
+            date_str (str): The date string to be used in the invoice.
+            PPA (pd.DataFrame): DataFrame containing ticket information with columns including 'TicketEPAN', 'Quantity', 'Discounted', 'Price', 'Turnover', and 'NetPrice'.
+            CRP (pd.DataFrame): DataFrame containing company and participant information with columns including 'Comp_No', 'Comp_Name', 'Street', 'ZipCode', 'City', 'Phone', 'PTCPT_Surname', 'PTCPT_ContractStart', 'PTCPT_ContractEnd', and 'PTCPT_No'.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If any required data is missing or improperly formatted.
+    """
+    
+    
     # Process PPA tickets
     epanlist = PPA.TicketEPAN.unique()
     logger.debug(f"\n Unique EPANs found: {len(epanlist)} \n")
@@ -103,7 +126,7 @@ def flatFee_c1(date_str,PPA,CRP):
             ticket_epan = TicketEpan(epan)
             
             ptct_id = int(ticket_epan.ptcpid)
-            type_id = int(ticket_epan.season_parker)
+            type_id = int(ticket_epan.type_parker)
             
             filtered_df = PPA[PPA['TicketEPAN'] == epan]
             if filtered_df.empty:
