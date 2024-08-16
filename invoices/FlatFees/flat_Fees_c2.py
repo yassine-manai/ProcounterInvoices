@@ -50,7 +50,6 @@ def flatFee_c2(date_str,ppa_c2,crp_c2):
 
     # Fetch and log token data
     fetch_data_token()
-    logger.info("Token data fetched and saved")    
 
     # Process PPA tickets
     epanlist = PPA.TicketEPAN.unique()

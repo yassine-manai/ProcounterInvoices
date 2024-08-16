@@ -13,7 +13,7 @@ def get_headers() -> Dict[str, str]:
     }
 
 
-def make_request(method: str, url: str, **kwargs) -> requests.Response:
+def request_meth(method: str, url: str, **kwargs) -> requests.Response:
     headers = get_headers()
     logger.debug(f"Making {method} request to {url} with headers: {headers}")
     

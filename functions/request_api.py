@@ -7,7 +7,7 @@ from functions.get_headers import get_headers
 
 
 
-def make_request(method: str, url: str, **kwargs) -> dict:
+def request_meth(method: str, url: str, **kwargs) -> dict:
     """
     Makes an HTTP request to the specified URL and returns the response details.
 

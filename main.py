@@ -45,7 +45,6 @@ CRP = read_file(crp_file_path)
 """ logger.debug(f"Reading STR file from {str_file_path}")
 STR = read_file(str_file_path)
  """
-print("\n")
 
 
 # Extract Files of last month from folder
@@ -109,10 +108,8 @@ logger.info("Token data fetched and saved")
 
 logger.info("Creating FlatFee invoice . . . ")  
  
-if flatFee_c1 (date_str,PPA,CRP):
-    logger.info("Flat Fee invoice created successfully")
-else:
-    logger.error("Failed to create flat fee invoice")
+flatFee_c1 (date_str,PPA,CRP)
+logger.info("Flat Fee invoice created successfully")
  
     
 
@@ -138,7 +135,7 @@ logger.info("Creating Company Pooling invoice . . . ")
 logger.info("Start Save images Process . . . ")   
 animate()
 #fetch_invoices_and_images()
-logger.info("Images Saved . . . ")   
+logger.info("Images Saved Succesfully . . ")    
 
 
 
