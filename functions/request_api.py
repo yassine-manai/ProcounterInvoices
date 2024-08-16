@@ -34,7 +34,6 @@ def request_meth(method: str, url: str, **kwargs) -> dict:
 
         # Log the full response
         logger.debug(f"Received response [{response.status_code}] from {url}")
-        logger.debug(f"Response headers: {dict(response.headers)}")
         logger.debug(f"Response content: {response.text}")
 
         response.raise_for_status()

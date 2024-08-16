@@ -34,13 +34,13 @@ def flatFee_c1(date_str,PPA,CRP):
     
     # Process PPA tickets
     epanlist = PPA.TicketEPAN.unique()
-    logger.debug(f"\n Unique EPANs found: {len(epanlist)} \n List : {epanlist}")
+    logger.debug(f" ------------------------- Unique EPANs found: {len(epanlist)}  List : {epanlist} -------------------------")
 
     company_epans = defaultdict(list)
     for epan in epanlist:
         ticket_epan = TicketEpan(epan)
         company_epans[int(ticket_epan.company_id)].append(epan)
-    logger.debug(f"----- company EPAN found : {company_epans}")
+    logger.debug(f" ------------------------- company EPAN found : {company_epans} ------------------------- ")
 
 
     # Create invoices
@@ -162,7 +162,7 @@ def flatFee_c1(date_str,PPA,CRP):
                 }
                 invoice_data["invoiceRows"].append(invoice_row)
             else:
-                logger.warning(f"No data found for ptct_id: {ptct_id} in company_id: {company_id}")
+                logger.warning(f"No data found for Participant_id: {ptct_id} in company_id: {company_id}")
                 continue
 
         # Create invoice for this company
