@@ -1,4 +1,4 @@
-from datetime import datetime
+from dateutil import parser
 
 def date_format(date_str: str) -> str:
     """
@@ -17,13 +17,8 @@ def date_format(date_str: str) -> str:
     Raises:
         ValueError: If the date string does not match any of the supported formats.
     """
-    date_formats = ["%d/%m/%Y", "%d-%m-%Y", "%d.%m.%Y"]
-
-    for fmt in date_formats:
-        try:
-            date_obj = datetime.strptime(date_str, fmt)
-            return date_obj.strftime("%Y-%m-%d")
-        except ValueError:
-            continue
-
-    raise ValueError(f"Date format for '{date_str}' is not supported")
+    try:
+        date_obj = parser.parse(date_str)
+        return date_obj.strftime("%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Date format for '{date_str}' is not supported")

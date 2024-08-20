@@ -45,3 +45,9 @@ DATA_DIRECTORY = str(os.getenv("DATA_DIRECTORY")) if os.getenv("DATA_DIRECTORY")
 
 ACCOUNT_NUMBER = str(os.getenv("ACCOUNT_NUMBER")) if os.getenv("ACCOUNT_NUMBER") else config.get('USER_DATA', 'ACCOUNT_NUMBER', fallback='FI6499899900010338')
 BIC = str(os.getenv("BIC")) if os.getenv("BIC") else config.get('USER_DATA', 'BIC', fallback='NDEAFIHH')
+
+ACCOUNT_NUMBER = str(os.getenv("ACCOUNT_NUMBER")) if os.getenv("ACCOUNT_NUMBER") else config.get('USER_DATA', 'ACCOUNT_NUMBER', fallback='FI6499899900010338')
+BIC = str(os.getenv("BIC")) if os.getenv("BIC") else config.get('USER_DATA', 'BIC', fallback='NDEAFIHH')
+
+FILES_PATH = str(os.getenv("FILES_PATH")) if os.getenv("FILES_PATH") else config.get('USER_DATA', 'FILES_PATH', fallback='./DEP')
+DENOMINATOR = str(os.getenv("DENOMINATOR")) if os.getenv("DENOMINATOR") else config.get('USER_DATA', 'DENOMINATOR', fallback='100')

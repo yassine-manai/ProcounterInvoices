@@ -1,5 +1,6 @@
 import sys
-from loguru import logger 
+
+from loguru import logger
 
 from config.config import LEVEL, LOG_ON_FILE, FILENAME, FILE_SIZE
 

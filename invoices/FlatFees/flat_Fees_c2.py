@@ -48,9 +48,6 @@ def flatFee_c2(date_str,ppa_c2,crp_c2):
     crp_files = gl.glob(crp_c2)
     CRP = pd.concat([read_file(file) for file in crp_files], ignore_index=True)
 
-    # Fetch and log token data
-    fetch_data_token()
-
     # Process PPA tickets
     epanlist = PPA.TicketEPAN.unique()
     logger.debug(f"Unique EPANs found: {len(epanlist)}")

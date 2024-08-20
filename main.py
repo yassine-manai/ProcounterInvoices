@@ -1,4 +1,5 @@
 import time
+from config.config import FILES_PATH
 from config.log_config import logger
 from datetime import datetime
 from functions.extract_month_file import find_files_last_month
@@ -18,6 +19,7 @@ logger.info("Starting Process . . . . . . . . . . . . . . . . . . . . .")
 
 # Get current date
 date_str = datetime.now().strftime("%Y-%m-%d")
+# Get LastMonth
 cur_month = time.strftime("%m")
 last_month = f"0{str(int(time.strftime("%m"))-1 )}"
 
@@ -25,17 +27,15 @@ last_month = f"0{str(int(time.strftime("%m"))-1 )}"
 logger.debug(f"Current date: {date_str} + Current month: {cur_month} + last_month: {last_month}")
 
 # Define file paths
-ppa_file_path = "./DEP/PPA-240604.PSV"
-crp_file_path = "./DEP/CRP-240604.PSV"
+ppa_file_path = f"{FILES_PATH}/PPA-240528.PSV"
+crp_file_path = f"{FILES_PATH}/CRP-240528.PSV"
 #str_file_path = "./DEP/STR-240606.PSV"
-
-
 ppa_c2 = f"./DEP/PPA-*.PSV"
 crp_c2= f"./DEP/CRP-*.PSV"
 
 
 
-# Read data from files
+# Read data from files 
 logger.debug(f"Reading PPA file from {ppa_file_path}")
 PPA = read_file(ppa_file_path)
 
@@ -102,8 +102,8 @@ else:
 
   
 # Fetch and log token data
-fetch_data_token()
-logger.info("Token data fetched and saved")    
+#fetch_data_token()
+#logger.info("Token data fetched and saved")    
 
 
 logger.info("Creating FlatFee invoice . . . ")  
@@ -132,10 +132,10 @@ logger.info("Creating Company Pooling invoice . . . ")
 
 
 # Get images invoices from the server 
-logger.info("Start Save images Process . . . ")   
-animate()
+#logger.info("Start Save images Process . . . ")   
+#animate()
 #fetch_invoices_and_images()
-logger.info("Images Saved Succesfully . . ")    
+#logger.info("Images Saved Succesfully . . ")    
 
 
 

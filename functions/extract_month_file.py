@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import time
 import glob
@@ -19,7 +20,7 @@ def find_files_last_month(directory, typeFile):
     """
     
     # Get the current year and month
-    current_year = time.strftime("%y")  # Two-digit year format
+    current_year = time.strftime("%y")  
     current_month = int(time.strftime("%m"))
     logger.debug(f"Current Year: {current_year} -- Current Month: {current_month}")
 
@@ -29,13 +30,11 @@ def find_files_last_month(directory, typeFile):
         last_month = '12'
     else:
         last_month_year = current_year
-        last_month = str(current_month - 3).zfill(2)
+        last_month = str(current_month - 1).zfill(2)
 
-    # Construct the search pattern
     search_pattern = os.path.join(directory, f"{typeFile}-{last_month_year}{last_month}*.PSV")
     logger.debug(f"Search pattern: {search_pattern}")
 
-    # Check if the directory exists
     if not os.path.exists(directory):
         logger.error(f"Directory does not exist: {directory}")
         return []
@@ -47,3 +46,9 @@ def find_files_last_month(directory, typeFile):
     #logger.debug(f"Matching files: {matching_files}")
 
     return matching_files
+
+
+def get_last_month() -> str:
+    current_date = datetime.now()
+    last_month = current_date.month - 1 if current_date.month > 1 else 12
+    return f"{last_month:02d}"
