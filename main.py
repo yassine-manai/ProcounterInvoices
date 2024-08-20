@@ -12,7 +12,7 @@ from functions.animation import animate
 from functions.fetch_token import fetch_data_token 
 from functions.img_invoices import fetch_invoices_and_images
 from classes.ticket_epan import TicketEpan
-
+from mnt import mnt
 
 # Start Execution
 logger.info("Starting Process . . . . . . . . . . . . . . . . . . . . .") 
@@ -26,32 +26,12 @@ last_month = f"0{str(int(time.strftime("%m"))-1 )}"
 
 logger.debug(f"Current date: {date_str} + Current month: {cur_month} + last_month: {last_month}")
 
-# Define file paths
-ppa_file_path = f"{FILES_PATH}/PPA-240528.PSV"
-crp_file_path = f"{FILES_PATH}/CRP-240528.PSV"
-#str_file_path = "./DEP/STR-240606.PSV"
-ppa_c2 = f"./DEP/PPA-*.PSV"
-crp_c2= f"./DEP/CRP-*.PSV"
-
-
-
-# Read data from files 
-logger.debug(f"Reading PPA file from {ppa_file_path}")
-PPA = read_file(ppa_file_path)
-
-logger.debug(f"Reading CRP file from {crp_file_path}")
-CRP = read_file(crp_file_path)
-
-""" logger.debug(f"Reading STR file from {str_file_path}")
-STR = read_file(str_file_path)
- """
-
 
 # Extract Files of last month from folder
-directory = './DEP'
+""" directory = './DEP'
 files_PPA = find_files_last_month(directory,'PPA')
 files_CRC = find_files_last_month(directory,'CRC')
-
+ """
 """ 
 if files_PPA: 
     logger.success(f"Files found in last month: {len(files_PPA)} with type PPA")
@@ -102,16 +82,11 @@ else:
 
   
 # Fetch and log token data
-#fetch_data_token()
-#logger.info("Token data fetched and saved")    
-
-
-logger.info("Creating FlatFee invoice . . . ")  
- 
-flatFee_c1 (date_str,PPA,CRP)
-logger.info("Flat Fee invoice created successfully")
+fetch_data_token()
+logger.info("Token data fetched and saved")    
  
     
+mnt()
 
 """ # create FlatFee invoice for one month --> Case 1
 logger.info("Creating FlatFee Monthly invoice . . . ")  
